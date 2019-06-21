@@ -45,11 +45,24 @@ namespace MixedRealityExtension.RPC
         /// <param name="args">The arguments for the remote procedure call.</param>
         public void SendRPC(string procName, params object[] args)
         {
-            _app.Protocol.Send(new EngineToAppRPC()
+            switch (procName)
             {
-                ProcName = procName,
-                Args = args.ToList()
-            });
+                case "fast-transform-update":
+                    _app.Protocol.Send(new FastTransformUpdate()
+                    {
+                        ActorId = (Guid)args[0],
+                        Transform = (MixedRealityExtension.Core.Types.MWTransform)args[1]
+                    });
+                    break;
+
+                default:
+                    _app.Protocol.Send(new EngineToAppRPC()
+                    {
+                        ProcName = procName,
+                        Args = args.ToList()
+                    });
+                    break;
+            }
         }
     }
 }

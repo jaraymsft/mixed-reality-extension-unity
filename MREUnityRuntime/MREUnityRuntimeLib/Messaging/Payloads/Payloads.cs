@@ -315,4 +315,20 @@ namespace MixedRealityExtension.Messaging.Payloads
     public class HeartbeatReply : Payload
     {
     }
+
+    /// <summary>
+    /// App => Engine, Engine => App
+    /// </summary>
+    public class FastTransformUpdate : Payload
+    {
+        /// <summary>
+        /// The actor id whose transform we want to update.
+        /// </summary>
+        public Guid ActorId;
+
+        /// <summary>
+        /// The actor id whose transform we want to update.
+        /// </summary>
+        public MixedRealityExtension.Core.Types.MWTransform Transform;
+    }
 }
