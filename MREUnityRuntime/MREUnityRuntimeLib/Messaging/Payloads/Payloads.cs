@@ -328,4 +328,12 @@ namespace MixedRealityExtension.Messaging.Payloads
         public Guid userId;
         public int millis;
     }
+
+    /// <summary>
+    /// App => Engine, Engine => App
+    /// </summary>
+    public class AckPayload : NetworkCommandPayload
+    {
+        public Guid userId;
+    }
 }

@@ -485,6 +485,12 @@ namespace MixedRealityExtension.App
         #endregion
 
         #region Command Handlers
+        [CommandHandler(typeof(AckPayload))]
+        private void OnRPCReceived(AckPayload payload, Action onCompleteCallback)
+        {
+            RPC.ReceiveRPC(payload);
+            onCompleteCallback?.Invoke();
+        }
 
         [CommandHandler(typeof(TestPayload))]
         private void OnRPCReceived(TestPayload payload, Action onCompleteCallback)

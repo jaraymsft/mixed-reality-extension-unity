@@ -6,6 +6,7 @@ using System.Linq;
 
 namespace MixedRealityExtension.Messaging.Payloads
 {
+    [PayloadType(typeof(AckPayload), "ack-payload")]
     [PayloadType(typeof(ActionPerformed), "perform-action")]
     [PayloadType(typeof(ActorCorrection), "actor-correction")]
     [PayloadType(typeof(ActorUpdate), "actor-update")]

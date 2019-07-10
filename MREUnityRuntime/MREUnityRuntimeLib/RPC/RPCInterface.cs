@@ -58,7 +58,17 @@ namespace MixedRealityExtension.RPC
         {
             if (_handlers.ContainsKey("timer-payload"))
             {
-                _handlers["timer-payload"].Execute(new Newtonsoft.Json.Linq.JToken[] {payload.userId, payload.millis});
+                _handlers["timer-payload"].Execute(new Newtonsoft.Json.Linq.JToken[] { payload.userId, payload.millis });
+            }
+        }
+
+        internal void ReceiveRPC(AckPayload payload)
+        {
+            if (_handlers.ContainsKey("ack-payload"))
+            {
+                _handlers["ack-payload"].Execute(new Newtonsoft.Json.Linq.JToken[] {
+                payload.userId,
+                });
             }
         }
 
@@ -77,11 +87,21 @@ namespace MixedRealityExtension.RPC
         /// <param name="args">The arguments for the remote procedure call.</param>
         public void SendRPC(string procName, params object[] args)
         {
-            _app.Protocol.Send(new EngineToAppRPC()
+            if (procName == "ack-payload")
             {
-                ProcName = procName,
-                Args = args.ToList()
-            });
+                _app.Protocol.Send(new AckPayload()
+                {
+                    userId = (Guid)args[0]
+                });
+            }
+            else
+            {
+                _app.Protocol.Send(new EngineToAppRPC()
+                {
+                    ProcName = procName,
+                    Args = args.ToList()
+                });
+            }
         }
 
         public void SendRPC(ClientToClientRpc type, params object[] args)
