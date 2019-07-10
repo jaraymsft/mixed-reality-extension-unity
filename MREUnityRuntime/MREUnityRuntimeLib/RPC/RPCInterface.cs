@@ -24,7 +24,8 @@ namespace MixedRealityExtension.RPC
         public enum ClientToClientRpc
         {
             Test,
-            Timer
+            Timer,
+            PlacementAck
         }
 
         /// <summary>
@@ -118,6 +119,13 @@ namespace MixedRealityExtension.RPC
                         userId = (Guid)args[0],
                         position = arr1,
                         rotation = arr2
+                    });
+                    break;
+
+                case ClientToClientRpc.PlacementAck:
+                    _app.Protocol.Send(new AckPayload()
+                    {
+                        userId = (Guid)args[0]
                     });
                     break;
 
