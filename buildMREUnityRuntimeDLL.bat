@@ -2,7 +2,13 @@
 @echo off
 
 for /f "usebackq tokens=*" %%i in (`"%~dp0tools\vswhere" -latest -products * -requires Microsoft.Component.MSBuild -property installationPath`) do (
-  set VSInstallDir=%%i
+  set VSInstallDir='C:\Program Files (x86)\Microsoft Visual Studio\2017\Enterprise'
+)
+
+if exist "%VSInstallDir%\MSBuild\15.0\Bin\MSBuild.exe" (
+  echo path exists
+  pause
+  exit /b 1
 )
 
 if not exist "%VSInstallDir%\MSBuild\15.0\Bin\MSBuild.exe" (
@@ -21,6 +27,7 @@ if errorlevel 1 (
   pause
   exit /b 1
 )
+pause
 exit /b 0
 
 

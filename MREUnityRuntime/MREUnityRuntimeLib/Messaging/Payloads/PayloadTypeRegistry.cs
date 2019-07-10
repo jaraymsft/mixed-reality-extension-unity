@@ -53,7 +53,8 @@ namespace MixedRealityExtension.Messaging.Payloads
     [PayloadType(typeof(UserLeft), "user-left")]
     [PayloadType(typeof(UserUpdate), "user-update")]
     [PayloadType(typeof(Traces), "traces")]
-    [PayloadType(typeof(FastTransformUpdate), "fast-transform-update")]
+    [PayloadType(typeof(TestPayload), "test-payload")]
+    [PayloadType(typeof(TimerPayload), "timer-payload")]
     internal static class PayloadTypeRegistry
     {
         private static Dictionary<string, Type> _stringToPayloadMap;

@@ -316,19 +316,16 @@ namespace MixedRealityExtension.Messaging.Payloads
     {
     }
 
-    /// <summary>
-    /// App => Engine, Engine => App
-    /// </summary>
-    public class FastTransformUpdate : Payload
+    public class TestPayload : NetworkCommandPayload
     {
-        /// <summary>
-        /// The actor id whose transform we want to update.
-        /// </summary>
-        public Guid ActorId;
+        public Guid userId;
+        public float[] position;
+        public float[] rotation;
+    }
 
-        /// <summary>
-        /// The actor id whose transform we want to update.
-        /// </summary>
-        public MixedRealityExtension.Core.Types.MWTransform Transform;
+    public class TimerPayload : NetworkCommandPayload
+    {
+        public Guid userId;
+        public int millis;
     }
 }

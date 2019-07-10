@@ -6,6 +6,7 @@ using System.Linq;
 using MixedRealityExtension.App;
 using MixedRealityExtension.Messaging.Payloads;
 using Newtonsoft.Json;
+using UnityEngine;
 
 namespace MixedRealityExtension.RPC
 {
@@ -20,6 +21,12 @@ namespace MixedRealityExtension.RPC
 
         internal RPCInterface(MixedRealityExtensionApp app) => _app = app;
 
+        public enum ClientToClientRpc
+        {
+            Test,
+            Timer
+        }
+
         /// <summary>
         /// Registers and RPC handler for the specific procedure name
         /// </summary>
@@ -28,6 +35,31 @@ namespace MixedRealityExtension.RPC
         public void OnReceive(string procName, RPCHandlerBase handler)
         {
             _handlers[procName] = handler;
+        }
+
+        internal void ReceiveRPC(TestPayload payload)
+        {
+            if (_handlers.ContainsKey("test-payload"))
+            {
+                _handlers["test-payload"].Execute(new Newtonsoft.Json.Linq.JToken[] {
+                    payload.userId,
+                    payload.position[0],
+                    payload.position[1],
+                    payload.position[2],
+                    payload.rotation[0],
+                    payload.rotation[1],
+                    payload.rotation[2],
+                    payload.rotation[3]
+                    });
+            }
+        }
+
+        internal void ReceiveRPC(TimerPayload payload)
+        {
+            if (_handlers.ContainsKey("timer-payload"))
+            {
+                _handlers["timer-payload"].Execute(new Newtonsoft.Json.Linq.JToken[] {payload.userId, payload.millis});
+            }
         }
 
         internal void ReceiveRPC(AppToEngineRPC payload)
@@ -45,24 +77,40 @@ namespace MixedRealityExtension.RPC
         /// <param name="args">The arguments for the remote procedure call.</param>
         public void SendRPC(string procName, params object[] args)
         {
-            switch (procName)
+            _app.Protocol.Send(new EngineToAppRPC()
             {
-                case "fast-transform-update":
-                    _app.Protocol.Send(new FastTransformUpdate()
+                ProcName = procName,
+                Args = args.ToList()
+            });
+        }
+
+        public void SendRPC(ClientToClientRpc type, params object[] args)
+        {
+            switch(type)
+            {
+                case ClientToClientRpc.Test:
+                    Vector3 vect1 = (Vector3)args[1];
+                    Quaternion vect2 = (Quaternion)args[2];
+                    float[] arr1 = new float[] {vect1[0], vect1[1], vect1[2]};
+                    float[] arr2 = new float[] {vect2.x, vect2.y, vect2.z, vect2.w};
+                    _app.Protocol.Send(new TestPayload()
                     {
-                        ActorId = (Guid)args[0],
-                        Transform = (MixedRealityExtension.Core.Types.MWTransform)args[1]
+                        userId = (Guid)args[0],
+                        position = arr1,
+                        rotation = arr2
                     });
                     break;
 
                 default:
-                    _app.Protocol.Send(new EngineToAppRPC()
-                    {
-                        ProcName = procName,
-                        Args = args.ToList()
-                    });
                     break;
             }
+
+            
+            // _app.Protocol.Send(new TimerPayload()
+            // {
+            //     userId = (Guid)args[0],
+            //     millis = (int)args[1]
+            // });
         }
     }
 }
