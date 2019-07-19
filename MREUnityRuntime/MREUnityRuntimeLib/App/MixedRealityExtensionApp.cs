@@ -492,15 +492,8 @@ namespace MixedRealityExtension.App
             onCompleteCallback?.Invoke();
         }
 
-        [CommandHandler(typeof(TestPayload))]
-        private void OnRPCReceived(TestPayload payload, Action onCompleteCallback)
-        {
-            RPC.ReceiveRPC(payload);
-            onCompleteCallback?.Invoke();
-        }
-
-        [CommandHandler(typeof(TimerPayload))]
-        private void OnRPCReceived(TimerPayload payload, Action onCompleteCallback)
+        [CommandHandler(typeof(TransformPayload))]
+        private void OnRPCReceived(TransformPayload payload, Action onCompleteCallback)
         {
             RPC.ReceiveRPC(payload);
             onCompleteCallback?.Invoke();

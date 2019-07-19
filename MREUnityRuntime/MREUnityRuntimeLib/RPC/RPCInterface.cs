@@ -23,8 +23,7 @@ namespace MixedRealityExtension.RPC
 
         public enum ClientToClientRpc
         {
-            Test,
-            Timer,
+            Transform,
             PlacementAck
         }
 
@@ -38,12 +37,13 @@ namespace MixedRealityExtension.RPC
             _handlers[procName] = handler;
         }
 
-        internal void ReceiveRPC(TestPayload payload)
+        internal void ReceiveRPC(TransformPayload payload)
         {
-            if (_handlers.ContainsKey("test-payload"))
+            if (_handlers.ContainsKey("transform-payload"))
             {
                 _handlers["test-payload"].Execute(new Newtonsoft.Json.Linq.JToken[] {
                     payload.userId,
+                    payload.timeStampId,
                     payload.position[0],
                     payload.position[1],
                     payload.position[2],
@@ -55,20 +55,13 @@ namespace MixedRealityExtension.RPC
             }
         }
 
-        internal void ReceiveRPC(TimerPayload payload)
-        {
-            if (_handlers.ContainsKey("timer-payload"))
-            {
-                _handlers["timer-payload"].Execute(new Newtonsoft.Json.Linq.JToken[] { payload.userId, payload.millis });
-            }
-        }
-
         internal void ReceiveRPC(AckPayload payload)
         {
             if (_handlers.ContainsKey("ack-payload"))
             {
                 _handlers["ack-payload"].Execute(new Newtonsoft.Json.Linq.JToken[] {
                 payload.userId,
+                payload.timeStampId
                 });
             }
         }
@@ -88,35 +81,26 @@ namespace MixedRealityExtension.RPC
         /// <param name="args">The arguments for the remote procedure call.</param>
         public void SendRPC(string procName, params object[] args)
         {
-            if (procName == "ack-payload")
+            _app.Protocol.Send(new EngineToAppRPC()
             {
-                _app.Protocol.Send(new AckPayload()
-                {
-                    userId = (Guid)args[0]
-                });
-            }
-            else
-            {
-                _app.Protocol.Send(new EngineToAppRPC()
-                {
-                    ProcName = procName,
-                    Args = args.ToList()
-                });
-            }
+                ProcName = procName,
+                Args = args.ToList()
+            });
         }
 
         public void SendRPC(ClientToClientRpc type, params object[] args)
         {
             switch(type)
             {
-                case ClientToClientRpc.Test:
-                    Vector3 vect1 = (Vector3)args[1];
-                    Quaternion vect2 = (Quaternion)args[2];
-                    float[] arr1 = new float[] {vect1[0], vect1[1], vect1[2]};
-                    float[] arr2 = new float[] {vect2.x, vect2.y, vect2.z, vect2.w};
-                    _app.Protocol.Send(new TestPayload()
+                case ClientToClientRpc.Transform:
+                    Vector3 pos = (Vector3)args[2];
+                    Quaternion rot = (Quaternion)args[3];
+                    float[] arr1 = new float[] {pos[0], pos[1], pos[2]};
+                    float[] arr2 = new float[] {rot.x, rot.y, rot.z, rot.w};
+                    _app.Protocol.Send(new TransformPayload()
                     {
                         userId = (Guid)args[0],
+                        timeStampId = (int)args[1],
                         position = arr1,
                         rotation = arr2
                     });
@@ -125,20 +109,14 @@ namespace MixedRealityExtension.RPC
                 case ClientToClientRpc.PlacementAck:
                     _app.Protocol.Send(new AckPayload()
                     {
-                        userId = (Guid)args[0]
+                        userId = (Guid)args[0],
+                        timeStampId = (int)args[1]
                     });
                     break;
 
                 default:
                     break;
             }
-
-            
-            // _app.Protocol.Send(new TimerPayload()
-            // {
-            //     userId = (Guid)args[0],
-            //     millis = (int)args[1]
-            // });
         }
     }
 }

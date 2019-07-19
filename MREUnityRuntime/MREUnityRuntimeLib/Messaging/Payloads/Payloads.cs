@@ -316,17 +316,15 @@ namespace MixedRealityExtension.Messaging.Payloads
     {
     }
 
-    public class TestPayload : NetworkCommandPayload
+    /// <summary>
+    /// App => Engine, Engine => App
+    /// </summary>
+    public class TransformPayload : NetworkCommandPayload
     {
         public Guid userId;
+        public int timeStampId;
         public float[] position;
         public float[] rotation;
-    }
-
-    public class TimerPayload : NetworkCommandPayload
-    {
-        public Guid userId;
-        public int millis;
     }
 
     /// <summary>
@@ -335,5 +333,6 @@ namespace MixedRealityExtension.Messaging.Payloads
     public class AckPayload : NetworkCommandPayload
     {
         public Guid userId;
+        public int timeStampId;
     }
 }
