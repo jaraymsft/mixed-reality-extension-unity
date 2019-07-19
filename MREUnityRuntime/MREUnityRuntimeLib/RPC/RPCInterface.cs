@@ -41,7 +41,7 @@ namespace MixedRealityExtension.RPC
         {
             if (_handlers.ContainsKey("transform-payload"))
             {
-                _handlers["test-payload"].Execute(new Newtonsoft.Json.Linq.JToken[] {
+                _handlers["transform-payload"].Execute(new Newtonsoft.Json.Linq.JToken[] {
                     payload.userId,
                     payload.timeStampId,
                     payload.position[0],
