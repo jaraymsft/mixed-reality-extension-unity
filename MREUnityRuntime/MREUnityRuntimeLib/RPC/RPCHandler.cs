@@ -335,4 +335,50 @@ namespace MixedRealityExtension.RPC
             );
         }
     }
+
+        /// <summary>
+    /// Class that serves as an RPC handler for a procedure that takes nine arguments.
+    /// </summary>
+    /// <typeparam name="ArgT1">The type of the first argument.</typeparam>
+    /// <typeparam name="ArgT2">The type of the second argument.</typeparam>
+    /// <typeparam name="ArgT3">The type of the third argument.</typeparam>
+    /// <typeparam name="ArgT4">The type of the fourth argument.</typeparam>
+    /// <typeparam name="ArgT5">The type of the fifth argument.</typeparam>
+    /// <typeparam name="ArgT6">The type of the sixth argument.</typeparam>
+    /// <typeparam name="ArgT7">The type of the seventh argument.</typeparam>
+    /// <typeparam name="ArgT8">The type of the eighth argument.</typeparam>
+    /// <typeparam name="ArgT9">The type of the ninth argument.</typeparam>
+    public class RPCHandler<ArgT1, ArgT2, ArgT3, ArgT4, ArgT5, ArgT6, ArgT7, ArgT8, ArgT9> : RPCHandlerBase
+    {
+        private readonly Action<ArgT1, ArgT2, ArgT3, ArgT4, ArgT5, ArgT6, ArgT7, ArgT8, ArgT9> _action;
+
+        /// <summary>
+        /// Initializes an instance of the class <see cref="RPCHandler{ArgT1, ArgT2, ArgT3, ArgT4, ArgT5, ArgT6, ArgT7, ArgT8, ArgT9}"/>
+        /// </summary>
+        /// <param name="action">The action to perform when the RPC is being executed.</param>
+        public RPCHandler(Action<ArgT1, ArgT2, ArgT3, ArgT4, ArgT5, ArgT6, ArgT7, ArgT8, ArgT9> action)
+        {
+            _action = action;
+        }
+
+        internal override void Execute(JToken[] args)
+        {
+            if (args.Length != 9)
+            {
+                throw new ArgumentException("Not the correct number of args.  This RPC handler expects nine args.");
+            }
+
+            _action?.Invoke(
+                args[0].ToObject<ArgT1>(),
+                args[1].ToObject<ArgT2>(),
+                args[2].ToObject<ArgT3>(),
+                args[3].ToObject<ArgT4>(),
+                args[4].ToObject<ArgT5>(),
+                args[5].ToObject<ArgT6>(),
+                args[6].ToObject<ArgT7>(),
+                args[7].ToObject<ArgT8>(),
+                args[8].ToObject<ArgT9>()
+            );
+        }
+    }
 }
