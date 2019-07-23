@@ -43,6 +43,7 @@ namespace MixedRealityExtension.RPC
             {
                 _handlers["transform-payload"].Execute(new Newtonsoft.Json.Linq.JToken[] {
                     payload.userId,
+                    payload.attachmentType,
                     payload.timeStampId,
                     payload.position[0],
                     payload.position[1],
@@ -93,14 +94,15 @@ namespace MixedRealityExtension.RPC
             switch(type)
             {
                 case ClientToClientRpc.Transform:
-                    Vector3 pos = (Vector3)args[2];
-                    Quaternion rot = (Quaternion)args[3];
+                    Vector3 pos = (Vector3)args[3];
+                    Quaternion rot = (Quaternion)args[4];
                     float[] arr1 = new float[] {pos[0], pos[1], pos[2]};
                     float[] arr2 = new float[] {rot.x, rot.y, rot.z, rot.w};
                     _app.Protocol.Send(new TransformPayload()
                     {
                         userId = (Guid)args[0],
-                        timeStampId = (int)args[1],
+                        attachmentType = (int)args[1],
+                        timeStampId = (int)args[2],
                         position = arr1,
                         rotation = arr2
                     });
