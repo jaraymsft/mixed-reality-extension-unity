@@ -321,8 +321,7 @@ namespace MixedRealityExtension.Messaging.Payloads
     /// </summary>
     public class TransformPayload : NetworkCommandPayload
     {
-        public Guid userId;
-        public int attachmentType;
+        public string userId;
         public int timeStampId;
         public float[] position;
         public float[] rotation;
