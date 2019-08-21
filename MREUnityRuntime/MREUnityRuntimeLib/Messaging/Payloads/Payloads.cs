@@ -335,4 +335,14 @@ namespace MixedRealityExtension.Messaging.Payloads
         public Guid userId;
         public int timeStampId;
     }
+
+    /// <summary>
+    /// App => Engine, Engine => App
+    /// </summary>
+    public class JsonMessagePayload : NetworkCommandPayload
+    {
+        public Guid userId;
+        public string payloadType;
+        public string jsonBody;
+    }
 }

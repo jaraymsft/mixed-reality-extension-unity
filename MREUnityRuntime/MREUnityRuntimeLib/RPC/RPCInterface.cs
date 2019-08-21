@@ -24,7 +24,8 @@ namespace MixedRealityExtension.RPC
         public enum ClientToClientRpc
         {
             Transform,
-            PlacementAck
+            PlacementAck,
+            JsonMessage
         }
 
         /// <summary>
@@ -63,6 +64,18 @@ namespace MixedRealityExtension.RPC
                 payload.userId,
                 payload.timeStampId
                 });
+            }
+        }
+
+        internal void ReceiveRPC(JsonMessagePayload payload)
+        {
+            if (_handlers.ContainsKey("json-message-payload"))
+            {
+                _handlers["json-message-payload"].Execute(new Newtonsoft.Json.Linq.JToken[] {
+                    payload.userId,
+                    payload.payloadType,
+                    payload.jsonBody
+                    });
             }
         }
 
@@ -111,6 +124,15 @@ namespace MixedRealityExtension.RPC
                     {
                         userId = (Guid)args[0],
                         timeStampId = (int)args[1]
+                    });
+                    break;
+
+                case ClientToClientRpc.JsonMessage:
+                    _app.Protocol.Send(new JsonMessagePayload()
+                    {
+                        userId = (Guid)args[0],
+                        payloadType = (string)args[1],
+                        jsonBody = (string)args[2]
                     });
                     break;
 
